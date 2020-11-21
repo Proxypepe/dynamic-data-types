@@ -1,7 +1,9 @@
 #pragma once
 
 #include <iostream>
+#include "BST.h"
 #include <assert.h>
+#include "MyException.h"
 
 template <class T>
 class  ListIterator;
@@ -17,9 +19,10 @@ private:
 	Tnode<T>* next = nullptr;
 	friend class List<T>;
 	friend class ListIterator<T>;
-public:
 	Tnode(T data) : field(data) { next = nullptr; };
-	Tnode(){ field = T(); next = nullptr;}
+	Tnode() { field = T(); next = nullptr; }
+public:
+
 };
 
 // List Iterator class 
@@ -50,9 +53,15 @@ private:
 	Tnode<T>* head = nullptr;		
 
 	T get_field();
+	void fix_size();
+	void tree_into_list(BST<T>* v);
 
 public:
 	List();
+	List(size_t count, T value = T());
+	List(const List<T>& x);
+	List(List<T>&& x);
+
 	~List()	{this->clear();}
 
 	size_t get_size();
@@ -67,10 +76,18 @@ public:
 
 	void push_back(T data);
 	void pop_back();
+
 	void insert(size_t pos, T data);
 	void remove(size_t pos);
 
+	void bubble_sort();
+
 	void swap(List<T>& other);
+	void splice(size_t pos, List<T>& other);
+	void reverse();
+	void resize(size_t n, T val = T());
+	void unique();
+	void sort();
 
 	bool is_empty();
 
@@ -80,9 +97,16 @@ public:
 	T& operator[](const size_t i);
 	List<T>& operator=(const List<T>& other);
 
+	friend std::ostream& operator<<(std::ostream& out, List<T>& list)
+	{
+		for (auto& i : list)
+			out << " " << i;
+		return out;
+	}
+
+
 	ListIterator<T> begin();
 	ListIterator<T> end();
-
 };
 
 template<class T>
@@ -92,9 +116,66 @@ inline T List<T>::get_field()
 }
 
 template<class T>
+inline void List<T>::fix_size()
+{
+	if (this->head == nullptr)
+		this->size = 0;
+	else
+	{
+		Tnode<T>* q = this->head;
+		this->size;
+		while (q != nullptr)
+		{
+			this->size++;
+			q = q->next;
+		}
+	}
+}
+
+template<class T>
+inline void List<T>::tree_into_list(BST<T>* v)
+{
+	if (v == nullptr)
+		return;
+	tree_into_list(v->get_left());
+	this->push_back(v->get_data());
+	tree_into_list(v->get_right());
+}
+
+
+template<class T>
 inline List<T>::List()
 {
 	this->head = nullptr;
+}
+
+template<class T>
+inline List<T>::List(size_t count, T value)
+{
+	this->push_back(value);
+}
+
+template<class T>
+inline List<T>::List(const List<T>& x)
+{
+	Tnode<T>* q = x.head;
+	while (q != nullptr)
+	{
+		this->push_back(q->field);
+		q = q->next;
+	}
+}
+
+template<class T>
+inline List<T>::List(List<T>&& x)
+{
+	Tnode<T>* q = x.head;
+	while (q != nullptr)
+	{
+		this->push_back(q->field);
+		q = q->next;
+	}
+	x.clear();
 }
 
 template<class T>
@@ -107,9 +188,7 @@ template<class T>
 inline void List<T>::clear()
 {
 	while (size)
-	{
 		this->pop_front();
-	}
 }
 
 template<class T>
@@ -117,7 +196,7 @@ inline void List<T>::print_list()
 {
 	Tnode<T>* q = this->head;
 	while (q != nullptr)
-	{
+	{ 
 		std::cout << q->field << "\n";
 		q = q->next;
 	}
@@ -190,10 +269,17 @@ inline void List<T>::pop_back()
 	{
 		Tnode<T>* q = this->head;
 
-		while (q->next->next != nullptr)
-			q = q->next;
-		delete q->next;
-		q->next = nullptr;
+		if (this->size == 1)
+		{
+			this->head = this->head->next;
+			delete q;
+		}
+		else {
+			while (q->next->next != nullptr)
+				q = q->next;
+			delete q->next;
+			q->next = nullptr;
+		}
 		this->size--;
 	}
 }
@@ -201,6 +287,15 @@ inline void List<T>::pop_back()
 template<class T>
 inline void List<T>::insert(size_t pos, T data)
 {
+	try
+	{
+		if (pos > this->size)
+			throw MyException();
+	}
+	catch(MyException& e)
+	{
+		cout << e.out_of_range();
+	}
 	if (this->head != nullptr && pos <= this->size)
 	{
 		if (pos == 0)
@@ -250,11 +345,115 @@ inline void List<T>::remove(size_t pos)
 }
 
 template<class T>
+inline void List<T>::bubble_sort()
+{
+
+}
+
+template<class T>
 inline void List<T>::swap(List<T>& other)
 {
-	//pass
+	Tnode<T>* q = this->head;
+	Tnode<T>* p = other.head;
+	this->head = p;
+	other.head = q;
+	size_t _tmp_size = this->size;
+	this->size = other.size;
+	other.size = _tmp_size;
+}
 
+template<class T>
+inline void List<T>::splice(size_t pos, List<T>& other)
+{
+	Tnode<T>* q = this->head;
+	size_t  _add_len = this->size - pos;
+	this->size = pos;
+	for (size_t i = 0; i < pos - 1; i++)
+		q = q->next;
+	if (other.head == nullptr)
+		other.head = q->next;
+	else
+	{
+		Tnode<T>* p = other.head;
+		while (p->next != nullptr)
+			p = p->next;
+		p->next = q->next; 
+	}
+	q->next = nullptr;
+	other.size += _add_len;
+}
 
+template<class T>
+inline void List<T>::reverse()
+{
+	if (this->head != nullptr && this->size > 1)
+	{
+		Tnode<T>* q = this->head;
+		Tnode<T>* _q = this->head;
+		while (q->next != nullptr)
+			q = q->next;
+		this->head = q;
+		Tnode<T>* p = this->head;
+		if (this->size > 2)
+		{
+			for (size_t i = 0; i < this->size - 1; i++)
+			{
+				q = _q;
+				while (q->next->next != nullptr)
+					q = q->next;
+				p->next = q;
+				p = p->next;
+				q->next = nullptr;
+			}
+			p = _q;
+		}
+		else
+		{
+			_q->next = nullptr;
+			p->next = _q;
+		}
+	}
+}
+
+template<class T>
+inline void List<T>::resize(size_t n, T val)
+{
+	if (this->size > n)
+	{
+		n = this->size - n;
+		for (size_t i = 0; i < n; i++)
+			this->pop_back();
+	}
+	else
+	{
+		n = n - this->size;
+		for (size_t i = 0; i < n; i++)
+			this->push_back(val);
+	}
+}
+
+template<class T>
+inline void List<T>::unique()
+{
+	if (this->head != nullptr)
+	{
+		Tnode<T>* q = this->head;
+		BST<T>* tree = nullptr;
+	}
+}
+
+template<class T>
+inline void List<T>::sort()
+{
+	BST<T>* tree = nullptr;
+	Tnode<T>* q = this->head;
+	while (q != nullptr)
+	{
+		tree->add_node(tree, q->field);
+		q = q->next;
+	}
+	this->clear();
+	this->tree_into_list(tree);
 }
 
 template<class T>
