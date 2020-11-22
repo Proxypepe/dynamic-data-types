@@ -19,8 +19,8 @@ private:
 	Tnode<T>* next = nullptr;
 	friend class Forword_list<T>;
 	friend class ListIterator<T>;
-	Tnode(T data) : field(data) { next = nullptr; };
-	Tnode() { field = T(); next = nullptr; }
+	explicit Tnode(T data) : field(data), next(nullptr) {}
+	explicit Tnode()  :field(T()), next(nullptr){}
 public:
 
 };
@@ -41,7 +41,6 @@ public:
 	T& operator*  ();
 };
 
-
 // Forword_list class
 template <class T>
 class Forword_list
@@ -58,7 +57,8 @@ private:
 
 public:
 	Forword_list();
-	Forword_list(size_t count, T value = T());
+	Forword_list(size_t count);
+	Forword_list(size_t count, T value);
 	Forword_list(const Forword_list<T>& x);
 	Forword_list(Forword_list<T>&& x);
 
@@ -79,6 +79,8 @@ public:
 
 	void insert(size_t pos, T data);
 	void remove(size_t pos);
+
+	void change_element(size_t pos, T data);
 
 	void swap(Forword_list<T>& other);
 	void splice(size_t pos, Forword_list<T>& other);
@@ -139,7 +141,6 @@ inline void Forword_list<T>::tree_into_list(BST<T>* v)
 	tree_into_list(v->get_right());
 }
 
-
 template<class T>
 inline Forword_list<T>::Forword_list()
 {
@@ -147,9 +148,17 @@ inline Forword_list<T>::Forword_list()
 }
 
 template<class T>
+inline Forword_list<T>::Forword_list(size_t count)
+{
+	for (size_t i = 0; i < count; i++)
+		this->push_back(0);
+}
+
+template<class T>
 inline Forword_list<T>::Forword_list(size_t count, T value)
 {
-	this->push_back(value);
+	for (size_t i = 0; i < count; i++)
+		this->push_back(value);
 }
 
 template<class T>
@@ -166,15 +175,8 @@ inline Forword_list<T>::Forword_list(const Forword_list<T>& x)
 template<class T>
 inline Forword_list<T>::Forword_list(Forword_list<T>&& x)
 {
-	Tnode<T>* q = x.head;
-	while (q != nullptr)
-	{
-		this->push_back(q->field);
-		q = q->next;
-	}
-	x.clear();
+	this = std::move(x);
 }
-
 
 template<class T>
 inline size_t Forword_list<T>::get_size()
@@ -340,6 +342,17 @@ inline void Forword_list<T>::remove(size_t pos)
 			this->size--;
 		}
 	}
+}
+
+template<class T>
+inline void Forword_list<T>::change_element(size_t pos, T data)
+{
+	Tnode<T>* q = this->head;
+	for (size_t i = 0; i < pos; i++)
+	{
+		q = q->next;
+	}
+	q->field = data;
 }
 
 template<class T>
