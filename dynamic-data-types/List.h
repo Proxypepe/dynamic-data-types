@@ -17,7 +17,7 @@ private:
 	T data;
 	ListNode<T>* next;
 	ListNode<T>* prev;
-	ListNode() : data(T()), next(nullptr), prev(nullptr) {}
+	ListNode()		 : data(T()),  next(nullptr), prev(nullptr) {}
 	ListNode(T data) : data(data), next(nullptr), prev(nullptr) {}
 };
 
@@ -60,6 +60,9 @@ private:
 
 public:
 	List() : head(nullptr), tail(nullptr) {}
+	explicit List(size_type count, const value_type& value = 0);
+	List(List<T>& other);
+	List(List<T>&& other);
 
 	~List() { this->clear(); }
 
@@ -117,6 +120,30 @@ inline void List<T>::tree_into_list(BST<T>* v)
 	tree_into_list(v->get_left());
 	this->push_back(v->get_data());
 	tree_into_list(v->get_right());
+}
+
+template<class T>
+inline List<T>::List(size_type count, const value_type& value)
+{
+	for (size_t i = 0; i < count; i++)
+		this->push_back(value);
+}
+
+template<class T>
+inline List<T>::List(List<T>& other)
+{
+	ListNode<T>* q = other.head;
+	while (q != nullptr)
+	{
+		this->push_back(q->data);
+		q = q->next;
+	}
+}
+
+template<class T>
+inline List<T>::List(List<T>&& other)
+{
+	this = std::move(other);
 }
 
 template<class T>
