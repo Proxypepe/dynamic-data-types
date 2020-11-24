@@ -1,63 +1,57 @@
 ﻿#include <iostream>
+#include <chrono>
 #include "List.h"
-#include "Hashmap.h"
-#include <string>
-#include "Policy.h"
-#include "Tree.h"
-//
-//typedef struct Policy
-//{
-//	int key;
-//	std::string surname;
-//
-//} Policy_t;
-//
-//void init(Policy_t& pol, int key, std::string surname)
-//{
-//	pol.key = key;
-//	pol.surname = surname;
-//	//return pol;
-//}
-//
-//void print_policy(Policy_t pol)
-//{
-//	std::cout << "Key: " << pol.key << "Surname: " << pol.surname << "\n";
-//}
-//int main()
-//{
-//	Policy policy;
-//	Hashmap<Policy> map(5);
-//
-//	for (int i = 0; i < 4; i++)
-//	{
-//		int key;
-//		std::string company, surname;
-//		std::cin >> key >> company >> surname;
-//		policy.init(key, company, surname);
-//		map.add_element(policy, policy.getNumber());
-//	}
-//	map.print_map();
-//
-//
-//
-//	return 0;
-//}
 
-
-
+using std::cout;
+using std::endl;
+using namespace std::chrono;
 
 int main()
 {
-	Tree<char>* tree = nullptr;
-	std::string str;
-	std::cin >> str;
+	List<int> list;
+	list.push_back(3);
+	list.push_back(2);
+	list.push_back(4);
+	list.push_back(1);
+	list.push_back(1);
+	list.push_back(4);
+	list.sort();
+	//list.unique();
+	list.push_back(4);
 
-	tree->build_arithmetic_tree(tree, str);
-	tree->bfs(tree);
-	tree->print_arithmetic_tree(tree);
-
-
-	//delete tree;
+	for (auto& i : list)
+		cout << i << "  ";
 	return 0;
 }
 
+
+
+
+
+
+
+//cout << "list 1: " << endl;
+//for (auto& i : list)
+//cout << i << "  ";
+//cout << "\nlist 2: " << endl;
+//for (auto& i : l)
+//cout << i << "  ";
+
+//template<class T>
+//void out(T t) { cout << t << endl; }
+//
+//template<class H, class... T>
+//void out(H h, T... t) { cout << h << "  "; out(t...); }
+//
+//template<class... Args>
+//void plus1(size_t pos, Args... args) { cout << pos << "  "; out(++args...); }
+//
+//
+//void foo(bool(*bar)(int n))
+//{
+//	int d = 0;
+//	if (bar(d))
+//		cout << "yes";
+//	else
+//		cout << "no";
+//}

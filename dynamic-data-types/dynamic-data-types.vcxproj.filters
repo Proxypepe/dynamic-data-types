@@ -18,13 +18,25 @@
     <ClInclude Include="Hashmap.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="List.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
     <ClInclude Include="Policy.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="Tree.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="BST.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="MyException.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Forword_List.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Stack.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="List.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
