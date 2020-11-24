@@ -6,7 +6,7 @@
 #include "MyException.h"
 
 template <class T>
-class  ListIterator;
+class  ForwordListIterator;
 
 template <class T>
 class Forword_list;
@@ -18,25 +18,25 @@ private:
 	T field = T();
 	Tnode<T>* next = nullptr;
 	friend class Forword_list<T>;
-	friend class ListIterator<T>;
+	friend class ForwordListIterator<T>;
 	explicit Tnode(T data) : field(data), next(nullptr) {}
-	explicit Tnode()  :field(T()), next(nullptr){}
+	explicit Tnode()  : field(T()), next(nullptr) {}
 public:
 
 };
 
 // Forword_list Iterator class 
 template <class T>
-class  ListIterator
+class  ForwordListIterator
 {
 private:
-	ListIterator(Tnode<T>* q) : _q(q) {};
+	ForwordListIterator(Tnode<T>* q) : _q(q) {};
 	Tnode<T>* _q;
 	friend class Forword_list<T>;
 
 public:
-	bool operator== (ListIterator i) const;
-	bool operator!= (ListIterator i) const;
+	bool operator== (ForwordListIterator i) const;
+	bool operator!= (ForwordListIterator i) const;
 	void operator++ ();
 	T& operator*  ();
 };
@@ -46,6 +46,8 @@ template <class T>
 class Forword_list
 {
 private:
+	using value_type = T;
+	using size_type = size_t;
 
 	size_t size = 0;
 
@@ -54,6 +56,13 @@ private:
 	T get_field();
 	void fix_size();
 	void tree_into_list(BST<T>* v);
+
+	template<class H, class... Args>
+	void push_back(H h, Args... args) { this->push_back(h); this->push_back(args...); }
+	template<class H, class... Args>
+	void push_front(H h, Args... args) { this->push_front(h); this->push_front(args...); }
+	template<class H, class... Args>
+	void insert(size_type pos, H h, Args... args) { this->insert(pos, h); this->insert(pos, args...); }
 
 public:
 	Forword_list();
@@ -73,10 +82,16 @@ public:
 
 	void push_front(T data);
 	void pop_front();
-
+	template<class... Args>
+	void emplace_front(Args... args);
+	
 	void push_back(T data);
 	void pop_back();
+	template<class... Args>
+	void emplace_back(Args... args);
 
+	template<class... Args>
+	void emplace(size_type pos, Args... args);
 	void insert(size_t pos, T data);
 	void remove(size_t pos);
 
@@ -103,8 +118,8 @@ public:
 		return out;
 	}
 
-	ListIterator<T> begin();
-	ListIterator<T> end();
+	ForwordListIterator<T> begin();
+	ForwordListIterator<T> end();
 };
 
 template<class T>
@@ -240,19 +255,19 @@ inline void Forword_list<T>::pop_front()
 }
 
 template<class T>
-inline void Forword_list<T>::push_back(T data)
+template<class ...Args>
+inline void Forword_list<T>::emplace_front(Args ...args)
 {
-	Tnode<T>* q; 
-														
+	this->push_front(args...);
+}
+
+template<class T>
+inline void Forword_list<T>::push_back(T data)
+{												
 	if (this->head == nullptr)															
-	{
-		q = new Tnode<T>;
-		q->field = data;
-		q->next = nullptr;
-		this->head = q;
-	}
+		this->head = new Tnode<T>(data);
 	else {
-		q = this->head;
+		Tnode<T>* q = this->head;
 		while (q->next != nullptr)
 			q = q->next;
 		q->next = new Tnode<T>;
@@ -282,6 +297,20 @@ inline void Forword_list<T>::pop_back()
 		}
 		this->size--;
 	}
+}
+
+template<class T>
+template<class ...Args>
+inline void Forword_list<T>::emplace_back(Args ...args)
+{
+	this->push_back(args...);
+}
+
+template<class T>
+template<class ...Args>
+inline void Forword_list<T>::emplace(size_type pos, Args ...args)
+{
+	this->insert(pos, args...);
 }
 
 template<class T>
@@ -347,12 +376,14 @@ inline void Forword_list<T>::remove(size_t pos)
 template<class T>
 inline void Forword_list<T>::change_element(size_t pos, T data)
 {
-	Tnode<T>* q = this->head;
-	for (size_t i = 0; i < pos; i++)
-	{
-		q = q->next;
+	if (this->head != nullptr && pos <= this->size) {
+		Tnode<T>* q = this->head;
+		for (size_t i = 0; i < pos; i++)
+		{
+			q = q->next;
+		}
+		q->field = data;
 	}
-	q->field = data;
 }
 
 template<class T>
@@ -522,37 +553,38 @@ inline Forword_list<T>& Forword_list<T>::operator=(const Forword_list<T>& other)
 }
 
 template<class T>
-inline ListIterator<T> Forword_list<T>::begin()
+inline ForwordListIterator<T> Forword_list<T>::begin()
 { 
 	return head;
 }
 
 template<class T>
-inline ListIterator<T> Forword_list<T>::end()
+inline ForwordListIterator<T> Forword_list<T>::end()
 {
 	return nullptr;
 }
 
 template<class T>
-inline bool ListIterator<T>::operator==(ListIterator i) const
+inline bool ForwordListIterator<T>::operator==(ForwordListIterator i) const
 {
 	return this->_q == i._q;
 }
 
 template<class T>
-inline bool ListIterator<T>::operator!=(ListIterator i) const
+inline bool ForwordListIterator<T>::operator!=(ForwordListIterator i) const
 {
 	return this->_q != i._q;
 }
 
 template<class T>
-inline void ListIterator<T>::operator++()
+inline void ForwordListIterator<T>::operator++()
 {	
 	this->_q  = this->_q->next;
 }
 
 template<class T>
-inline T& ListIterator<T>::operator*()
+inline T& ForwordListIterator<T>::operator*()
 {
 	return this->_q->field;
 }
+
