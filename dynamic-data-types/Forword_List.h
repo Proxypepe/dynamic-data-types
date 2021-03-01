@@ -286,8 +286,9 @@ inline void Forword_list<T>::pop_back()
 
 		if (this->size == 1)
 		{
-			this->head = this->head->next;
+			q = q->next;
 			delete q;
+			this->head->next = nullptr;
 		}
 		else {
 			while (q->next->next != nullptr)
