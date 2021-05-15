@@ -27,7 +27,7 @@ private:
 public:
 	Avl() {}
 	Avl(cr_value_type value) : _field(value), _left(nullptr), _right(nullptr), _height(1) {}
-	pAvl instert(pAvl&, cr_value_type); //TODO decide problem with ref
+	pAvl insert(pAvl&, cr_value_type); //TODO decide problem with ref
 	void printInOder() { printInOder_(this); }
 };
 
@@ -48,7 +48,7 @@ inline int Avl<T>::max(const int& a, const int& b)
 }
 
 template<class T>
-inline Avl<T>* Avl<T>::instert(pAvl& v, cr_value_type value)
+inline Avl<T>* Avl<T>::insert(pAvl& v, cr_value_type value)
 {
 	if (v == nullptr)
 	{
@@ -56,9 +56,9 @@ inline Avl<T>* Avl<T>::instert(pAvl& v, cr_value_type value)
 		return v;
 	}
 	if (v->_field > value)
-		v->_left = instert(v->_left, value);
+		v->_left = insert(v->_left, value);
 	else if (v->_field < value)
-		v->_right = instert(v->_right, value);
+		v->_right = insert(v->_right, value);
 	else 
 		return v;
 
