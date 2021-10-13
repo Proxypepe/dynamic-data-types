@@ -1,5 +1,6 @@
 #pragma once
 #include "BST.h"
+#include <assert.h>
 //list.remove_if([](auto i) {return  i < 5; });
 
 template <class T>
@@ -60,6 +61,7 @@ private:
 
 public:
 	List() : head(nullptr), tail(nullptr) {}
+	explicit List(std::initializer_list<value_type>);
 	explicit List(size_type count, const value_type& value = 0);
 	List(List<T>& other);
 	List(List<T>&& other);
@@ -100,7 +102,7 @@ public:
 
 	List<T>*& front();
 	List<T>*& back();
-
+	T& operator[](const size_t i);
 	friend std::ostream& operator<<(std::ostream& out, List<T>& List)
 	{
 		for (auto& i : List)
@@ -120,6 +122,13 @@ inline void List<T>::tree_into_list(BST<T>* v)
 	tree_into_list(v->get_left());
 	this->push_back(v->get_data());
 	tree_into_list(v->get_right());
+}
+
+template<class T>
+inline List<T>::List(std::initializer_list<value_type> l)
+{
+	for (auto it = l.begin(); it != l.end(); it++)
+		this->push_back(*it);
 }
 
 template<class T>
@@ -154,6 +163,11 @@ inline bool List<T>::empty() const noexcept
 	return false;
 }
 
+/*
+* Returns the number of elements in the container
+*@param none
+*@return The number of elements in the container
+*/
 template<class T>
 inline size_t List<T>::size() const noexcept
 {
@@ -168,6 +182,13 @@ inline void List<T>::clear()
 	this->tail = nullptr;
 }
 
+/*
+* Inserts elements at the specified location in the container
+* inserts value before pos
+*@param pos - before which the content will be inserted
+*@param value - element value to insert
+*@return none
+*/
 template<class T>
 inline void List<T>::insert(size_type pos, const value_type& value)
 {
@@ -257,6 +278,11 @@ inline void List<T>::emplace(size_type pos, Args ...args)
 	this->insert(pos, args...);
 }
 
+/*
+* Appends the given element value to the end of the container.
+*@param value - the value of the element to append
+*@return none
+*/
 template<class T>
 inline void List<T>::push_back(const value_type& value)
 {
@@ -274,6 +300,11 @@ inline void List<T>::push_back(const value_type& value)
 	this->_size++;
 }
 
+/*
+* Removes the last element of the container
+*@param none
+*@return none
+*/
 template<class T>
 inline void List<T>::pop_back()
 {
@@ -296,6 +327,11 @@ inline void List<T>::emplace_back(Args ...args)
 	this->push_back(args...);
 }
 
+/*
+* Prepends the given element value to the beginning of the container.
+* @param value - the value of the element to prepend
+* @return none
+*/
 template<class T>
 inline void List<T>::push_front(const value_type& value)
 {
@@ -311,6 +347,11 @@ inline void List<T>::push_front(const value_type& value)
 	this->_size++;
 }
 
+/*
+* Removes the first element of the container
+*@param none
+*@return none
+*/
 template<class T>
 inline void List<T>::pop_front()
 {
@@ -355,11 +396,16 @@ inline void List<T>::resize(size_type count, const value_type& value)
 	}
 }
 
+/*
+*Removes all elements satisfying specific criteria
+*@param value - value of the elements to remove
+*@return none
+*/
 template<class T>
 inline size_t List<T>::remove(const value_type& value)
 {
 	size_t counter, removed, start_size;
-	counter = removed = 0;
+	counter = removed = 1;
 	start_size = this->_size;
 	ListNode<T>* q = this->head;
 	while (q != nullptr)
@@ -385,6 +431,7 @@ inline size_t List<T>::remove(const value_type& value)
 				q = q->next;
 				delete _tmp;
 				this->_size--;
+				removed++;
 			}
 		}
 		else
@@ -525,6 +572,21 @@ inline size_t List<T>::remove_if(UnaryPredicate p)
 		counter++;
 	}
 	return removed;
+}
+
+template<class T>
+T& List<T>::operator[](const size_t i)
+{
+	assert(i < this->_size);
+	int counter = 0;
+	ListNode<T>* q = this->head;
+	while (q != nullptr)
+	{
+		if (counter == i)
+			return q->data;
+		q = q->next;
+		counter++;
+	}
 }
 
 template<class T>

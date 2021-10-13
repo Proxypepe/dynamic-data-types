@@ -69,6 +69,7 @@ public:
 	Forword_list(size_t count);
 	Forword_list(size_t count, T value);
 	Forword_list(const Forword_list<T>& x);
+	Forword_list(std::initializer_list<value_type>);
 	Forword_list(Forword_list<T>&& x);
 
 	~Forword_list()	{this->clear();}
@@ -185,6 +186,13 @@ inline Forword_list<T>::Forword_list(const Forword_list<T>& x)
 		this->push_back(q->field);
 		q = q->next;
 	}
+}
+
+template<class T>
+inline Forword_list<T>::Forword_list(std::initializer_list<value_type> l)
+{
+	for (auto it = l.begin(); it != l.end(); it++)
+		this->push_back(*it);
 }
 
 template<class T>

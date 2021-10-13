@@ -4,15 +4,15 @@
 template <class T>
 class Avl
 {
-	using pAvl = Avl<T>*;
-	using tAvl = Avl<T>;
-	using value_type = T;
+	using pAvl			= Avl<T>*;
+	using tAvl			= Avl<T>;
+	using value_type	= T;
 	using cr_value_type = const value_type&;
 
 private:
-	pAvl		_left = nullptr;
-	pAvl		_right = nullptr;
-	value_type	_field = value_type();
+	pAvl		_left	= nullptr;
+	pAvl		_right	= nullptr;
+	value_type	_field	= value_type();
 	int	_height = 1;
 
 

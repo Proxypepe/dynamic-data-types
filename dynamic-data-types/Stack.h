@@ -6,7 +6,7 @@ class Stack;
 template <class T>
 class StackNode
 {
-private:
+public:
 	T data = T();
 	StackNode<T>* next = nullptr;
 	friend class Stack<T>;
@@ -40,7 +40,7 @@ public:
 	void clear();
 	//void print_stack();
 
-	Stack<T>* top();
+	StackNode<T>* top();
 
 };
 
@@ -56,6 +56,11 @@ inline Stack<T>::~Stack()
 	this->clear();
 }
 
+/*
+*Checks whether the underlying container is empty
+*@param none
+*@return true if the underlying container is empty, false otherwise
+*/
 template<class T>
 inline bool Stack<T>::empty() const
 {
@@ -64,12 +69,22 @@ inline bool Stack<T>::empty() const
 	return false;
 }
 
+/*
+*Returns the number of elements in the underlying container
+*@param none
+*@return the number of elements in the container
+*/
 template<class T>
 inline size_t Stack<T>::size() const
 {
 	return this->_size;
 }
 
+/*
+*Pushes the given element value to the top of the stack
+*@param value - the value of the element to push
+*@return none
+*/
 template<class T>
 inline void Stack<T>::push(const value_type& value)
 {
@@ -90,6 +105,11 @@ inline void Stack<T>::push(const value_type& value)
 	}
 }
 
+/*
+*Removes the top element from the stack
+*@param none
+*@return none
+*/
 template<class T>
 inline void Stack<T>::pop()
 {
@@ -112,6 +132,11 @@ inline void Stack<T>::pop()
 	}
 }
 
+/*
+*Removes all elements from the stack
+*@param none
+*@return none
+*/
 template<class T>
 inline void Stack<T>::clear()
 {
@@ -134,8 +159,13 @@ inline void Stack<T>::clear()
 //	}
 //}
 
+/*
+*Returns a reference to the top of the stack
+*@param none
+*@return a reference to the top of the stack
+*/
 template<class T>
-inline Stack<T>* Stack<T>::top()
+inline StackNode<T>* Stack<T>::top()
 {
 	if (this->empty())
 		return nullptr;

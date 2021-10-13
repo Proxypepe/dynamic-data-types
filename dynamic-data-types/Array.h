@@ -131,13 +131,24 @@ inline bool Array<T>::isEmpty()
 	return false;
 }
 
+/*
+* Erases all elements from the container
+*@param none
+*@return none
+*/
 template<class T>
 inline void Array<T>::clear()
 {
 	delete[] arr;
+	arr = nullptr;
 	_size = 0;
 }
 
+/*
+* Appends the given element value to the end of the container
+*@param value - the value of the element to append
+*@return none
+*/
 template<class T>
 inline void Array<T>::push_back(const_reference value)
 {
@@ -159,6 +170,11 @@ inline void Array<T>::push_back(const_reference value)
 	}
 }
 
+/*
+* Resizes the container to contain count elements
+*@param size - new size of the container
+*@return none
+*/
 template<class T>
 inline void Array<T>::resize(size_type size)
 {
@@ -167,8 +183,14 @@ inline void Array<T>::resize(size_type size)
 		new_array[i] = arr[i];
 	delete[] arr;
 	arr = new_array;
+	_size = size;
 }
 
+/*
+* Returns the number of elements in the container
+*@param none
+*@return the number of elements in the container
+*/
 template<class T>
 inline size_t Array<T>::size() const
 {
@@ -181,6 +203,11 @@ inline size_t Array<T>::capacity() const
 	return _capacity;
 }
 
+/*
+* Returns a reference to the element at specified location pos, with bounds checking
+*@param pos - position of the element to return
+*@return reference to the requested element
+*/
 template<class T>
 inline const T& Array<T>::at(size_type pos) const
 {
@@ -188,6 +215,11 @@ inline const T& Array<T>::at(size_type pos) const
 		return arr[pos];
 }
 
+/*
+* Returns a reference to the first element in the container
+*@param none
+*@return reference to the first element
+*/
 template<class T>
 inline const T& Array<T>::front() const
 {
@@ -195,6 +227,11 @@ inline const T& Array<T>::front() const
 		return arr[0];
 }
 
+/*
+* Returns a reference to the last element in the container
+*@param none
+*@return Reference to the last element
+*/
 template<class T>
 inline const T& Array<T>::back() const
 {
